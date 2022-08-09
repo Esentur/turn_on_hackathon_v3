@@ -5,6 +5,7 @@ from django.utils.safestring import mark_safe
 
 
 class UserManager(BaseUserManager):
+    use_in_migrations = True
 
     def _create_user(self, username, email, password, **extra_fields):
         if not email:
@@ -39,6 +40,7 @@ class MyUser(AbstractUser):
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=100)
     activation_code = models.CharField(max_length=50, blank=True)
+    image = models.ImageField(upload_to='avatars', blank= True, null = True)
     is_active = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
