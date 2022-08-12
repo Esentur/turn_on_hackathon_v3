@@ -122,3 +122,17 @@ class ForgotPasswordCompleteSerializer(serializers.Serializer):
         user.set_password(password)
         user.activation_code = ''
         user.save()
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+
+        favourites = []
+        for favourite in instance.favourites.all():
+            favourites.append(str(favourite))
+        representation['Избранные'] = favourites
+        return representation

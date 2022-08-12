@@ -75,11 +75,10 @@ class Favourite(models.Model):
                                on_delete=models.CASCADE,
                                related_name='favourites',
                                verbose_name='Избранные')
-    vehicle = models.ForeignKey(Team,
+    team = models.ForeignKey(Team,
                                 on_delete=models.CASCADE,
                                 related_name='favourites',
                                 verbose_name='Избранные')
-    favourite = models.BooleanField(verbose_name='favourite', default=False)
 
     def __str__(self):
         return f'Пользователь: {self.author} ----- Его(ее) избранное: {self.team}'

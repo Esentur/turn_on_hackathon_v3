@@ -1,10 +1,11 @@
 from django.shortcuts import render
 from django_filters.rest_framework import DjangoFilterBackend
-from requests import Response
+from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from apps.team.models import Team, Favourite, Like, Rating, Comment
@@ -31,15 +32,21 @@ class TeamView(ModelViewSet):
 
     @action(methods=['POST'], detail=True)
     def favorite(self, request, pk, *args, **kwargs):
+
         try:
             fav_obj, _ = Favourite.objects.get_or_create(author=request.user, team_id=pk)
-            fav_obj.favourite = not fav_obj.favourite
-            fav_obj.save()
+            print(fav_obj)
+            print(_)
+            if not _:
+                fav_obj.delete()
+                return Response('Removed from favourites')
+            else:
+                fav_obj.save()
+                return Response('Added to Favourites')
         except:
-            return ('The team does not exits!')
-        if fav_obj.favourite:
-            return Response('Added to Favourites')
-        return Response('Removed from Favourites')
+            return Response('The team does not exits!')
+
+
 
     @action(methods=['POST'], detail=True)
     def like(self, request, pk, *args, **kwargs):
@@ -48,17 +55,17 @@ class TeamView(ModelViewSet):
             like_obj.like = not like_obj.like
             like_obj.save()
         except:
-            return ('The team does not exist!')
+            return Response('The team does not exist!')
 
         if like_obj.like:
-            return Response('LIKED')
-        return Response('UNLIKED')
+            return Response('LIKED',status=status.HTTP_200_OK)
+        return Response('UNLIKED',status=status.HTTP_200_OK)
 
     @action(methods=['POST'], detail=True)
     def rating(self, request, pk, *args, **kwargs):
         serializer = RatingSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        obj, _ = Rating.objects.get_or_create(seller=request.user, team_id=pk)
+        obj, _ = Rating.objects.get_or_create(author=request.user, team_id=pk)
         obj.rating = request.data['rating']
         obj.save()
         return Response(request.data)

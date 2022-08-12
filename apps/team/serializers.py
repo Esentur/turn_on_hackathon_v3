@@ -42,3 +42,10 @@ class CommentSerializer(serializers.ModelSerializer):
 
 class RatingSerializer(serializers.Serializer):
     rating = serializers.IntegerField(required=True, min_value=1, max_value=5)
+
+# class FavouriteSerializer(serializers.ModelSerializer):
+#     author = serializers.ReadOnlyField(source='author.username')
+#     class Meta:
+#         model = Comment
+#         fields = '__all__'
+

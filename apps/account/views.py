@@ -2,12 +2,14 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import render
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.generics import RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from apps.account.permissions import CustomPermission
 from apps.account.serializers import RegisterSerializer, LoginSerializer, ChangePasswordSerializer, \
-    ForgotPasswordCompleteSerializer, ForgotPasswordSerializer
+    ForgotPasswordCompleteSerializer, ForgotPasswordSerializer, UserSerializer
 from apps.account.tasks import celery_send_info_about_activation
 
 User = get_user_model()
@@ -69,3 +71,8 @@ class ForgotPasswordComplete(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.set_new_pass()
         return Response('Password successfully reset !')
+
+class UserDetailView(RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [CustomPermission]
