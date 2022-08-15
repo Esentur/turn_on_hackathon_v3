@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'apps.account',
     'apps.team',
+    'apps.court'
 
 ]
 

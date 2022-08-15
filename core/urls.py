@@ -22,4 +22,5 @@ urlpatterns = [
                   path('swagger/', schema_view.with_ui('swagger')),
                   path('account/', include('apps.account.urls')),
                   path('team/', include('apps.team.urls')),
+                  path('court/',include('apps.court.urls')),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
